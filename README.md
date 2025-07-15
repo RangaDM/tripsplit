@@ -13,3 +13,5 @@ A simple React app to split bills among group members, calculate settlements, an
 2. Start the app: `npm start`
 
 The app will run at http://localhost:3000 
+
+Vitis site : https://rangadm.github.io/tripsplit/
