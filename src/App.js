@@ -15,6 +15,7 @@ function App() {
       <Members members={members} setMembers={setMembers} />
       <Bills members={members} bills={bills} setBills={setBills} />
       <Settlement members={members} bills={bills} />
+      <hr style={{ margin: '32px 0' }} />
       <ExportSummary members={members} bills={bills} />
     </div>
   );
