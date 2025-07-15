@@ -12,6 +12,9 @@ function ExportSummary({ members, bills }) {
     grouped[s.to].push(s);
   });
 
+  // Calculate total expenditure
+  const totalExpenditure = bills.reduce((sum, b) => sum + (b.amount || 0), 0);
+
   const handleTextExport = () => {
     let text = 'TripSplit Summary\n\n';
     text += 'Members: ' + members.join(', ') + '\n';
@@ -78,6 +81,7 @@ function ExportSummary({ members, bills }) {
       <div ref={ref} style={{ background: '#fff', padding: 16, borderRadius: 8, marginBottom: 8 }}>
         <h3>TripSplit Summary</h3>
         <div><b>Members:</b> {members.join(', ')}</div>
+        <div style={{ margin: '8px 0' }}><b>Total Expenditure:</b> LKR {totalExpenditure.toFixed(2)}</div>
         <div style={{ margin: '8px 0' }}><b>Bills:</b>
           <ul>
             {bills.map((b, i) => (
