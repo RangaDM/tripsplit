@@ -16,6 +16,10 @@ function ExportSummary({ members, bills }) {
   const totalExpenditure = bills.reduce((sum, b) => sum + (b.amount || 0), 0);
 
   const handleTextExport = () => {
+    if (!members.length || !bills.length) {
+      alert('Nothing to download yet!');
+      return;
+    }
     let text = 'TripSplit Summary\n\n';
     text += 'Members: ' + members.join(', ') + '\n';
     text += '\nBills:\n';
@@ -44,6 +48,10 @@ function ExportSummary({ members, bills }) {
   };
 
   const handleImageExport = () => {
+    if (!members.length || !bills.length) {
+      alert('Nothing to download yet!');
+      return;
+    }
     if (!ref.current) return;
     html2canvas(ref.current).then(canvas => {
       // Create a new canvas to ensure watermark is on top
