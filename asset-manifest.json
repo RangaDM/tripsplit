@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/tripsplit/static/css/main.594c36e3.css",
-    "main.js": "/tripsplit/static/js/main.406d52d8.js",
+    "main.js": "/tripsplit/static/js/main.f900bfdb.js",
     "index.html": "/tripsplit/index.html",
     "main.594c36e3.css.map": "/tripsplit/static/css/main.594c36e3.css.map",
-    "main.406d52d8.js.map": "/tripsplit/static/js/main.406d52d8.js.map"
+    "main.f900bfdb.js.map": "/tripsplit/static/js/main.f900bfdb.js.map"
   },
   "entrypoints": [
     "static/css/main.594c36e3.css",
-    "static/js/main.406d52d8.js"
+    "static/js/main.f900bfdb.js"
   ]
 }
