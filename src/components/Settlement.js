@@ -1,9 +1,20 @@
 import React from 'react';
+import {
+  Box,
+  Typography,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Paper,
+} from '@mui/material';
 import settleUp from '../utils/settleUp';
 
 function Settlement({ members, bills }) {
   const settlements = settleUp(members, bills);
-  // Group by recipient (to)
+
+  // Group settlements by 'to'
   const grouped = {};
   settlements.forEach(s => {
     if (!grouped[s.to]) grouped[s.to] = [];
@@ -11,37 +22,44 @@ function Settlement({ members, bills }) {
   });
 
   return (
-    <div style={{ marginBottom: 32 }}>
-      <h2>Settlement</h2>
+    <Box mx={5} mb={4}>
+      <Typography color='#264653' variant="h5" gutterBottom>
+        Settlement
+      </Typography>
+
       {settlements.length === 0 ? (
-        <p>No settlements needed.</p>
+        <Typography color="text.secondary">No settlements needed.</Typography>
       ) : (
-        <div>
-          {Object.keys(grouped).map(to => (
-            <div key={to} style={{ marginBottom: 24 }}>
-              <b>To {to}:</b>
-              <table style={{ borderCollapse: 'collapse', marginTop: 8, minWidth: 200 }}>
-                <thead>
-                  <tr>
-                    <th style={{ border: '1px solid #ccc', padding: '4px 8px', background: '#f8f8f8' }}>From</th>
-                    <th style={{ border: '1px solid #ccc', padding: '4px 8px', background: '#f8f8f8' }}>Amount (LKR)</th>
-                  </tr>
-                </thead>
-                <tbody>
+        Object.keys(grouped).map(to => (
+          <Box key={to} mb={3}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
+              To {to}:
+            </Typography>
+            <Paper variant="outlined" sx={{ overflowX: 'auto' }}>
+              <Table size="small" aria-label={`Settlements to ${to}`}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>From</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }} align="right">
+                      Amount (LKR)
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
                   {grouped[to].map((s, i) => (
-                    <tr key={i}>
-                      <td style={{ border: '1px solid #ccc', padding: '4px 8px' }}>{s.from}</td>
-                      <td style={{ border: '1px solid #ccc', padding: '4px 8px', textAlign: 'right' }}>{s.amount.toFixed(2)}</td>
-                    </tr>
+                    <TableRow key={i}>
+                      <TableCell>{s.from}</TableCell>
+                      <TableCell align="right">{s.amount.toFixed(2)}</TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
-            </div>
-          ))}
-        </div>
+                </TableBody>
+              </Table>
+            </Paper>
+          </Box>
+        ))
       )}
-    </div>
+    </Box>
   );
 }
 
-export default Settlement; 
+export default Settlement;

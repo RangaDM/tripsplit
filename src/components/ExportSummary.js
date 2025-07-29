@@ -1,18 +1,19 @@
-import html2canvas from 'html2canvas';
 import React, { useRef } from 'react';
+import { Box, Typography, Button, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import html2canvas from 'html2canvas';
 import settleUp from '../utils/settleUp';
 
 function ExportSummary({ members, bills }) {
   const ref = useRef();
   const settlements = settleUp(members, bills);
-  // Group by recipient (to)
+
+  // Group settlements by recipient (to)
   const grouped = {};
   settlements.forEach(s => {
     if (!grouped[s.to]) grouped[s.to] = [];
     grouped[s.to].push(s);
   });
 
-  // Calculate total expenditure
   const totalExpenditure = bills.reduce((sum, b) => sum + (b.amount || 0), 0);
 
   const handleTextExport = () => {
@@ -21,8 +22,8 @@ function ExportSummary({ members, bills }) {
       return;
     }
     let text = 'TripSplit Summary\n\n';
-    text += 'Members: ' + members.join(', ') + '\n';
-    text += '\nBills:\n';
+    text += 'Members: ' + members.join(', ') + '\n\n';
+    text += 'Bills:\n';
     bills.forEach((b, i) => {
       text += `  ${i + 1}. ${b.desc ? b.desc + ': ' : ''}LKR ${b.amount.toFixed(2)} paid by ${b.payers.join(', ')} split between ${b.splitters ? b.splitters.join(', ') : members.join(', ')}\n`;
     });
@@ -54,16 +55,14 @@ function ExportSummary({ members, bills }) {
     }
     if (!ref.current) return;
     html2canvas(ref.current).then(canvas => {
-      // Create a new canvas to ensure watermark is on top
       const newCanvas = document.createElement('canvas');
       newCanvas.width = canvas.width;
       newCanvas.height = canvas.height;
       const ctx = newCanvas.getContext('2d');
-      // Draw the html2canvas image
       ctx.drawImage(canvas, 0, 0);
-      // Draw the watermark at the right bottom corner
+
       const text = 'TripSplit - Bill Splitter | RangaDM';
-      const fontSize = Math.floor(newCanvas.width / 60); // smaller font
+      const fontSize = Math.floor(newCanvas.width / 60);
       ctx.save();
       ctx.font = `bold ${fontSize}px sans-serif`;
       ctx.globalAlpha = 0.32;
@@ -75,7 +74,7 @@ function ExportSummary({ members, bills }) {
       const padding = 16;
       ctx.fillText(text, newCanvas.width - padding, newCanvas.height - padding);
       ctx.restore();
-      // Download
+
       const link = document.createElement('a');
       link.download = 'tripsplit-summary.png';
       link.href = newCanvas.toDataURL();
@@ -84,51 +83,69 @@ function ExportSummary({ members, bills }) {
   };
 
   return (
-    <div>
-      <h2>Export Summary</h2>
-      <div ref={ref} style={{ background: '#fff', padding: 16, borderRadius: 8, marginBottom: 8 }}>
-        <h3>TripSplit Summary</h3>
-        <div><b>Members:</b> {members.join(', ')}</div>
-        <div style={{ margin: '8px 0' }}><b>Total Expenditure:</b> LKR {totalExpenditure.toFixed(2)}</div>
-        <div style={{ margin: '8px 0' }}><b>Bills:</b>
-          <ul>
-            {bills.map((b, i) => (
-              <li key={i}>{b.desc ? b.desc + ': ' : ''}LKR {b.amount.toFixed(2)} paid by {b.payers.join(', ')}</li>
-            ))}
-          </ul>
-        </div>
-        <div><b>Settlements:</b>
-          <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
-            {settlements.length === 0 ? <li>No settlements needed.</li> :
-              Object.keys(grouped).map(to => (
-                <li key={to} style={{ marginBottom: 24 }}>
-                  <b>To {to}:</b>
-                  <table style={{ borderCollapse: 'collapse', marginTop: 8, minWidth: 200 }}>
-                    <thead>
-                      <tr>
-                        <th style={{ border: '1px solid #ccc', padding: '4px 8px', background: '#f8f8f8' }}>From</th>
-                        <th style={{ border: '1px solid #ccc', padding: '4px 8px', background: '#f8f8f8' }}>Amount (LKR)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {grouped[to].map((s, i) => (
-                        <tr key={i}>
-                          <td style={{ border: '1px solid #ccc', padding: '4px 8px' }}>{s.from}</td>
-                          <td style={{ border: '1px solid #ccc', padding: '4px 8px', textAlign: 'right' }}>{s.amount.toFixed(2)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </li>
-              ))
-            }
-          </ul>
-        </div>
-      </div>
-      <button onClick={handleTextExport} style={{ marginRight: 8 }}>Download as Text</button>
-      <button onClick={handleImageExport}>Download as Image</button>
-    </div>
+    <Box mx={5}>
+      <Typography color='#264653' variant="h5" gutterBottom>
+        Export Summary
+      </Typography>
+
+      <Paper ref={ref} elevation={3} sx={{ p: 3, mb: 3, backgroundColor: '#fff' }}>
+        <Typography variant="h6" gutterBottom>
+          TripSplit Summary
+        </Typography>
+
+        <Typography><strong>Members:</strong> {members.join(', ')}</Typography>
+
+        <Typography sx={{ mt: 1, mb: 2 }}><strong>Total Expenditure:</strong> LKR {totalExpenditure.toFixed(2)}</Typography>
+
+        <Typography variant="subtitle1" gutterBottom><strong>Bills:</strong></Typography>
+        <ul>
+          {bills.map((b, i) => (
+            <li key={i}>
+              {b.desc ? b.desc + ': ' : ''}LKR {b.amount.toFixed(2)} paid by {b.payers.join(', ')}
+            </li>
+          ))}
+        </ul>
+
+        <Typography variant="subtitle1" gutterBottom><strong>Settlements:</strong></Typography>
+        {settlements.length === 0 ? (
+          <Typography>No settlements needed.</Typography>
+        ) : (
+          Object.keys(grouped).map(to => (
+            <Box key={to} mb={3}>
+              <Typography variant="body1" fontWeight="bold" gutterBottom>
+                To {to}:
+              </Typography>
+              <Table size="small" aria-label={`Settlements to ${to}`} sx={{ minWidth: 250 }}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>From</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }} align="right">Amount (LKR)</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {grouped[to].map((s, i) => (
+                    <TableRow key={i}>
+                      <TableCell>{s.from}</TableCell>
+                      <TableCell align="right">{s.amount.toFixed(2)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          ))
+        )}
+      </Paper>
+
+      <Box mb={2} display="flex" gap={2}>
+        <Button variant="contained" color="primary" onClick={handleTextExport}>
+          Download as Text
+        </Button>
+        <Button variant="outlined" color="primary" onClick={handleImageExport}>
+          Download as Image
+        </Button>
+      </Box>
+    </Box>
   );
 }
 
-export default ExportSummary; 
+export default ExportSummary;

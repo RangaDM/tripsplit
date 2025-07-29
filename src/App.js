@@ -1,5 +1,23 @@
 import React, { useState } from "react";
-import "./App.css";
+import {
+  Container,
+  Typography,
+  Box,
+  Button,
+  Stack,
+  Divider,
+  Tooltip,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Snackbar,
+  Alert,
+} from "@mui/material";
+import InfoIcon from "@mui/icons-material/Info";
+
 import Bills from "./components/Bills";
 import ExportSummary from "./components/ExportSummary";
 import Members from "./components/Members";
@@ -8,171 +26,163 @@ import Settlement from "./components/Settlement";
 function App() {
   const [members, setMembers] = useState([]);
   const [bills, setBills] = useState([]);
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "info" });
+
+  const downloadState = () => {
+    if (members.length === 0 && bills.length === 0) {
+      alert("Nothing to download yet!");
+      return;
+    }
+    const data = { members, bills };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const now = new Date();
+    const pad = (n) => n.toString().padStart(2, "0");
+    const timestamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(
+      now.getHours()
+    )}-${pad(now.getMinutes())}-${pad(now.getSeconds())}`;
+    a.href = url;
+    a.download = `tripsplit-state-${timestamp}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleResetClick = () => {
+    setResetDialogOpen(true);
+  };
+
+  const handleResetConfirm = () => {
+    setMembers([]);
+    setBills([]);
+    setResetDialogOpen(false);
+    setSnackbar({ open: true, message: "State reset successfully.", severity: "info" });
+  };
+
+  const handleResetCancel = () => {
+    setResetDialogOpen(false);
+  };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") return;
+    setSnackbar({ ...snackbar, open: false });
+  };
 
   return (
-    <div className="app-container">
-      <h1>TripSplit - Bill Splitter</h1>
+    <Container style={{ padding: '15px', backgroundColor: 'white' }} maxWidth="md" sx={{ my: 4 }}>
+      <Typography variant="h3" component="h1" align="center" gutterBottom>
+        <span style={{ fontWeight: "bold", color: '#264653' }}>TripSplit</span>{" "}
+        <span style={{ fontWeight: "normal", fontSize: "0.5em", color: '#2a9d8f' }}>Bill Splitter</span>
+      </Typography>
+
       <Members members={members} setMembers={setMembers} />
       <Bills members={members} bills={bills} setBills={setBills} />
       <Settlement members={members} bills={bills} />
-      {/* Download State Button Section */}
-      <div style={{ textAlign: "center", marginTop: 16 }}>
-        <button
-          onClick={() => {
-            if (members.length === 0 && bills.length === 0) {
-              alert('Nothing to download yet!');
-              return;
-            }
-            const data = { members, bills };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            const now = new Date();
-            const pad = n => n.toString().padStart(2, '0');
-            const timestamp = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}_${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}`;
-            a.href = url;
-            a.download = `tripsplit-state-${timestamp}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-          }}
-          style={{
-            background: "#1976d2",
-            color: "#fff",
-            border: "none",
-            borderRadius: 4,
-            padding: "8px 24px",
-            fontWeight: "bold",
-            fontSize: 14,
-            cursor: "pointer",
-            boxShadow: "0 2px 6px rgba(25,118,210,0.08)",
-            margin: "0 auto 0 auto",
-            display: "block"
-          }}
-        >
+
+      <Box textAlign="center" mt={3}>
+        <Button variant="contained" color="primary" onClick={downloadState} sx={{ px: 4, fontWeight: "bold" }}>
           Download State
-        </button>
-      </div>
-      <hr style={{ margin: "24px 0 24px 0" }} />
-      {/* Upload State Button with Info Icon and Reset Button in a Row */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16, margin: "0 0 32px 0" }}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <input
-            id="upload-state-input"
-            type="file"
-            accept="application/json"
-            style={{ display: "none" }}
-            onChange={async (e) => {
-              const file = e.target.files[0];
-              if (!file) return;
-              try {
-                const text = await file.text();
-                const data = JSON.parse(text);
-                if (Array.isArray(data.members) && Array.isArray(data.bills)) {
-                  setMembers(data.members);
-                  setBills(data.bills);
-                  alert("State loaded successfully!");
-                } else {
-                  alert("Invalid file format.");
-                }
-              } catch (err) {
-                alert("Failed to load file: " + err.message);
+        </Button>
+      </Box>
+
+      <Divider sx={{ my: 4 }} />
+
+      <Stack direction="row" spacing={2} justifyContent="center" alignItems="center" mb={4}>
+        <input
+          id="upload-state-input"
+          type="file"
+          accept="application/json"
+          style={{ display: "none" }}
+          onChange={async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            try {
+              const text = await file.text();
+              const data = JSON.parse(text);
+              if (Array.isArray(data.members) && Array.isArray(data.bills)) {
+                setMembers(data.members);
+                setBills(data.bills);
+                setSnackbar({ open: true, message: "State loaded successfully!", severity: "success" });
+              } else {
+                setSnackbar({ open: true, message: "Invalid file format.", severity: "error" });
               }
-              e.target.value = ""; // reset input
-            }}
-          />
-          <button
-            type="button"
-            onClick={() => document.getElementById('upload-state-input').click()}
-            style={{
-              background: "#43a047",
-              color: "#fff",
-              border: "none",
-              borderRadius: 4,
-              padding: "8px 24px",
-              fontWeight: "bold",
-              fontSize: 12,
-              cursor: "pointer",
-              boxShadow: "0 2px 6px rgba(67,160,71,0.08)",
-              marginRight: 8,
-            }}
-          >
-            Load Previous State
-          </button>
-          <span style={{ position: "relative", display: "inline-block" }}>
-            <span
-              style={{
-                cursor: "pointer",
-                fontSize: 18,
-                color: "#888",
-                borderRadius: "50%",
-                padding: "0 6px",
-                userSelect: "none",
-                display: "inline-block",
-                lineHeight: 1.2,
-              }}
-              onMouseOver={e => {
-                const tooltip = e.currentTarget.nextSibling;
-                tooltip.style.display = 'block';
-              }}
-              onMouseOut={e => {
-                const tooltip = e.currentTarget.nextSibling;
-                tooltip.style.display = 'none';
-              }}
-            >
-              ℹ️
-            </span>
-            <span
-              style={{
-                display: "none",
-                position: "absolute",
-                left: "110%",
-                top: "50%",
-                transform: "translateY(-50%)",
-                background: "#333",
-                color: "#fff",
-                padding: "6px 12px",
-                borderRadius: 4,
-                fontSize: 12,
-                whiteSpace: "nowrap",
-                zIndex: 10,
-                boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-              }}
-            >
-              Restore your saved members and bills to continue where you left off.
-            </span>
-          </span>
-        </div>
-        <button
-          onClick={() => {
-            if (
-              window.confirm(
-                "Are you sure you want to reset all members and bills? This action cannot be undone."
-              )
-            ) {
-              setMembers([]);
-              setBills([]);
+            } catch (err) {
+              setSnackbar({ open: true, message: "Failed to load file: " + err.message, severity: "error" });
             }
+            e.target.value = "";
           }}
-          style={{
-            background: "#e53935",
-            color: "#fff",
-            border: "none",
-            borderRadius: 4,
-            padding: "8px 24px",
-            fontWeight: "bold",
-            fontSize: 12,
-            cursor: "pointer",
-            boxShadow: "0 2px 6px rgba(229,57,53,0.08)",
-          }}
-        >
-          Reset
-        </button>
-      </div>
-      <hr style={{ margin: "32px 0" }} />
+        />
+
+        <Box sx={{ width: 260 }}>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Button
+              fullWidth
+              variant="contained"
+              color="success"
+              onClick={() => document.getElementById("upload-state-input").click()}
+            >
+              Load Previous State
+            </Button>
+            <Tooltip title="Restore your saved members and bills to continue where you left off.">
+              <IconButton>
+                <InfoIcon />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        </Box>
+
+        <Box sx={{ width: 220 }}>
+          <Button fullWidth variant="contained" color="error" onClick={handleResetClick}>
+            Reset
+          </Button>
+        </Box>
+      </Stack>
+
+
+
+
+      <Divider sx={{ my: 4 }} />
+
       <ExportSummary members={members} bills={bills} />
-    </div>
+
+      {/* Reset Confirmation Dialog */}
+      <Dialog
+        open={resetDialogOpen}
+        onClose={handleResetCancel}
+        aria-labelledby="reset-dialog-title"
+        aria-describedby="reset-dialog-description"
+      >
+        <DialogTitle id="reset-dialog-title">Confirm Reset</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="reset-dialog-description">
+            Are you sure you want to reset all members and bills? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleResetCancel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleResetConfirm} color="error" autoFocus>
+            Reset
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar Notification */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbar.severity} sx={{ width: "100%" }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </Container>
   );
 }
 
