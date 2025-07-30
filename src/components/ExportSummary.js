@@ -261,7 +261,7 @@ function ExportSummary({ members, bills }) {
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2" style={{ flexWrap: 'wrap' }}>
             <button 
               className="btn btn-primary"
               onClick={handleTextExport}

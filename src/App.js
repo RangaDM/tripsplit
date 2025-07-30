@@ -35,7 +35,7 @@ function App() {
           <h2 className="card-title">Save & Load</h2>
         </div>
         
-        <div className="flex gap-2 mb-3">
+        <div className="flex gap-2 mb-3" style={{ flexWrap: 'wrap' }}>
           <button
             className="btn btn-primary"
             onClick={() => {

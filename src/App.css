@@ -416,6 +416,36 @@ body {
     width: 100%;
     justify-content: flex-end;
   }
+  
+  /* Fix button flex issues on mobile */
+  .flex.gap-2 {
+    flex-direction: column;
+    gap: 12px !important;
+  }
+  
+  .flex.gap-2 .btn {
+    width: 100%;
+    margin: 0;
+  }
+  
+  /* Ensure proper spacing for button groups */
+  .btn + .btn {
+    margin-left: 0;
+  }
+  
+  /* Additional mobile button improvements */
+  .flex[style*="flexWrap"] {
+    flex-direction: column;
+  }
+  
+  .flex[style*="flexWrap"] .btn {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+  
+  .flex[style*="flexWrap"] .btn:last-child {
+    margin-bottom: 0;
+  }
 }
 
 /* Loading States */
