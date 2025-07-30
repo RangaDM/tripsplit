@@ -223,7 +223,7 @@ function Bills({ members, bills, setBills }) {
                       style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
                     >
                       <span>✏️</span>
-                      <span>Edit</span>
+                      <span className="action-text">Edit</span>
                     </button>
                     <button 
                       className="btn btn-danger btn-small"
@@ -231,7 +231,7 @@ function Bills({ members, bills, setBills }) {
                       style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
                     >
                       <span>🗑️</span>
-                      <span>Remove</span>
+                      <span className="action-text">Remove</span>
                     </button>
                   </div>
                </div>

@@ -538,6 +538,36 @@ body {
   .list-item-actions .btn {
     white-space: nowrap;
   }
+  
+  /* Member edit mobile styles */
+  .action-text {
+    display: none !important;
+  }
+  
+  .btn-small {
+    padding: 8px 12px !important;
+    min-width: 40px !important;
+    justify-content: center !important;
+  }
+  
+  .list-item-actions {
+    gap: 8px !important;
+  }
+  
+  /* Bills list mobile styles */
+  .bills-list-item-actions .action-text {
+    display: none !important;
+  }
+  
+  .bills-list-item-actions .btn-small {
+    padding: 8px 12px !important;
+    min-width: 40px !important;
+    justify-content: center !important;
+  }
+  
+  .bills-list-item-actions {
+    gap: 8px !important;
+  }
 }
 
 /* Loading States */

@@ -18,7 +18,7 @@ function App() {
       </div>
 
       {/* Members Section */}
-      <Members members={members} setMembers={setMembers} />
+      <Members members={members} setMembers={setMembers} bills={bills} setBills={setBills} />
       
       {/* Bills Section */}
       <Bills members={members} bills={bills} setBills={setBills} />
