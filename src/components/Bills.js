@@ -190,49 +190,53 @@ function Bills({ members, bills, setBills }) {
       {bills.length > 0 && (
         <div className="mt-3">
           <h3 style={{ marginBottom: '16px', color: '#333', fontSize: '1.2rem' }}>📋 All Bills</h3>
-          <div className="list">
-            {bills.map((bill, i) => (
-              <div key={i} className="list-item slide-in" style={{ animationDelay: `${i * 0.1}s` }}>
-                <div className="list-item-content">
-                  <div style={{ marginBottom: '8px' }}>
-                    <span style={{ fontWeight: '600', fontSize: '16px' }}>
-                      {bill.desc ? bill.desc : `Bill #${i + 1}`}
-                    </span>
-                    <span style={{ 
-                      background: 'linear-gradient(135deg, #667eea, #764ba2)',
-                      color: 'white',
-                      padding: '4px 12px',
-                      borderRadius: '20px',
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      marginLeft: '12px'
-                    }}>
-                      LKR {bill.amount.toFixed(2)}
-                    </span>
+                     <div className="bills-list">
+             {bills.map((bill, i) => (
+               <div key={i} className="bills-list-item slide-in" style={{ animationDelay: `${i * 0.1}s` }}>
+                 <div className="bills-list-item-content">
+                   <div style={{ marginBottom: '8px' }}>
+                     <span style={{ fontWeight: '600', fontSize: '16px' }}>
+                       {bill.desc ? bill.desc : `Bill #${i + 1}`}
+                     </span>
+                     <span style={{ 
+                       background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                       color: 'white',
+                       padding: '4px 12px',
+                       borderRadius: '20px',
+                       fontSize: '14px',
+                       fontWeight: '600',
+                       marginLeft: '12px'
+                     }}>
+                       LKR {bill.amount.toFixed(2)}
+                     </span>
+                   </div>
+                   <div style={{ fontSize: '14px', color: '#666' }}>
+                     <span>💳 Paid by: <strong>{bill.payers.join(', ')}</strong></span>
+                     <br />
+                     <span>🎯 Split between: <strong>{bill.splitters.join(', ')}</strong></span>
+                   </div>
+                 </div>
+                 <div className="bills-list-item-actions">
+                    <button 
+                      className="btn btn-secondary btn-small"
+                      onClick={() => editBill(i)}
+                      style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+                    >
+                      <span>✏️</span>
+                      <span>Edit</span>
+                    </button>
+                    <button 
+                      className="btn btn-danger btn-small"
+                      onClick={() => removeBill(i)}
+                      style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+                    >
+                      <span>🗑️</span>
+                      <span>Remove</span>
+                    </button>
                   </div>
-                  <div style={{ fontSize: '14px', color: '#666' }}>
-                    <span>💳 Paid by: <strong>{bill.payers.join(', ')}</strong></span>
-                    <br />
-                    <span>🎯 Split between: <strong>{bill.splitters.join(', ')}</strong></span>
-                  </div>
-                </div>
-                <div className="list-item-actions">
-                  <button 
-                    className="btn btn-secondary btn-small"
-                    onClick={() => editBill(i)}
-                  >
-                    ✏️ Edit
-                  </button>
-                  <button 
-                    className="btn btn-danger btn-small"
-                    onClick={() => removeBill(i)}
-                  >
-                    🗑️ Remove
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+               </div>
+             ))}
+           </div>
         </div>
       )}
     </div>

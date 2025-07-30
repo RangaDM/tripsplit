@@ -79,14 +79,16 @@ function Members({ members, setMembers }) {
                   <span style={{ fontWeight: '500', fontSize: '16px' }}>{member}</span>
                 </div>
               </div>
-              <div className="list-item-actions">
-                <button 
-                  className="btn btn-danger btn-small"
-                  onClick={() => removeMember(member)}
-                >
-                  🗑️ Remove
-                </button>
-              </div>
+                             <div className="list-item-actions">
+                 <button 
+                   className="btn btn-danger btn-small"
+                   onClick={() => removeMember(member)}
+                   style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+                 >
+                   <span>🗑️</span>
+                   <span>Remove</span>
+                 </button>
+               </div>
             </div>
           ))}
         </div>

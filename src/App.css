@@ -116,6 +116,7 @@ body {
   font-size: 16px;
   transition: all 0.3s ease;
   background: #fafbfc;
+  text-align: center;
 }
 
 .input-field:focus {
@@ -127,6 +128,7 @@ body {
 
 .input-field::placeholder {
   color: #999;
+  text-align: center;
 }
 
 /* Button Styles */
@@ -259,6 +261,45 @@ body {
 .list-item-actions {
   display: flex;
   gap: 8px;
+  align-items: center;
+}
+
+/* Bills-specific styles */
+.bills-list {
+  list-style: none;
+  padding: 0;
+}
+
+.bills-list-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border-left: 4px solid #667eea;
+  transition: all 0.3s ease;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bills-list-item:hover {
+  background: #e9ecef;
+  transform: translateX(4px);
+}
+
+.bills-list-item-content {
+  flex: 1;
+  width: 100%;
+}
+
+.bills-list-item-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  justify-content: flex-end;
 }
 
 /* Table Styles */
@@ -301,6 +342,10 @@ body {
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .status-success {
@@ -407,14 +452,30 @@ body {
   }
   
   .list-item {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .list-item-actions {
+    width: auto;
+    justify-content: flex-end;
+  }
+  
+  /* Bills-specific mobile styles */
+  .bills-list-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
   }
   
-  .list-item-actions {
+  .bills-list-item-actions {
     width: 100%;
     justify-content: flex-end;
+  }
+  
+  .bills-list-item-content {
+    width: 100%;
   }
   
   /* Fix button flex issues on mobile */
@@ -445,6 +506,37 @@ body {
   
   .flex[style*="flexWrap"] .btn:last-child {
     margin-bottom: 0;
+  }
+  
+  /* Mobile form improvements */
+  .form-control {
+    width: 100%;
+  }
+  
+  .input-field {
+    text-align: center;
+  }
+  
+  /* Mobile status badge improvements */
+  .status-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  /* Mobile list item improvements */
+  .list-item {
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .list-item-actions {
+    flex-shrink: 0;
+  }
+  
+  .list-item-actions .btn {
+    white-space: nowrap;
   }
 }
 
